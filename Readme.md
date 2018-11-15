@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Светлана Малишенко](https://up.htmlacademy.ru/javascript/16/user/884319).
-* Наставник: `Неизвестно`.
+* Наставник: [Алекcандр Сушко](https://htmlacademy.ru/profile/sashasushko).
 
 ---
 
