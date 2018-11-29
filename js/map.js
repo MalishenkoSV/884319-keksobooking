@@ -36,12 +36,15 @@ var getRandomSubarray = function (arr) {
   return shuffledArray.slice(0, randomEndIndex);
 };
 
-var createAdvartisement = function () {
+var createAdvert = function (i) {
+  for (i = 1; i < COUNT; i++) {
+    var avatar = i;
+  }
   var x = getRandomIntegerFromInterval(CLOUD_X_MIN, CLOUD_X_MAX);
   var y = getRandomIntegerFromInterval(CLOUD_Y_MIN, CLOUD_Y_MAX);
-  var advartisement = {
+  var advertObject = {
     author: {
-      avatar: 'img/avatars/user0' + createAdvartisement(i) + '.png'
+      avatar: 'img/avatars/user0' + avatar + '.png'
     },
     offer: {
       title: getRandomElementFromArray(TITLES),
@@ -49,23 +52,24 @@ var createAdvartisement = function () {
       price: getRandomIntegerFromInterval(PRICE_MIN, PRICE_MAX),
       type: getRandomElementFromArray(TYPES),
       rooms: getRandomIntegerFromInterval(ROOMS_MIN, ROOMS_MAX),
-      guests:  getRandomIntegerFromInterval(GUESTS_MIN, GUESTS_MAX),
+      guests: getRandomIntegerFromInterval(GUESTS_MIN, GUESTS_MAX),
       checkin: getRandomElementFromArray(CHECKIN_TIME),
       checkout: getRandomElementFromArray(CHECKOUT_TIME),
       features: getRandomSubarray(FEATURES),
       description: '',
-      photos: randomCreateArray(PHOTOS)
+      photos: shuffleArray(PHOTOS)
     },
     location: {
       x: x,
       y: y
     }
   };
+  return advertObject;
 };
-var advartisements = [];
+var adverts = [];
 for (var i = 0; i < COUNT; i++) {
-  var advartisement = createAdvartisement();
-  advartisements.push(advartisement);
+  var advert = createAdvert();
+  adverts.push(advert);
 }
 
 var mapListElement = document.querySelector('.map');
@@ -76,25 +80,25 @@ var mapTemplate = document.querySelector('#pin')
     .content
     .querySelector('.setup-similar-item');
 
-var rendermapPin = function (createAdvartisement) {
+var rendermapPin = function (offer, author, x, y) {
   var mapPinElement = mapTemplate.cloneNode(true);
-  mapPinElement.querySelector('.map__pin').style = 'left : ' + x + 'px'; 'top:' + y + 'px';
+  mapPinElement.querySelector('.map__pin').style = 'left : ' + x + 'px'; 'top :' + y + 'px';
   mapPinElement.src = author.avatar;
   mapPinElement.alt = offer.title;
-  return mapPinElement;
+  return rendermapPin;
 };
 
 var fragment = document.createDocumentFragment();
-for (var j = 0; j < advartisements.length; j++) {
-  fragment.appendChild(mapPinElement);
+for (var j = 0; j < adverts.length; j++) {
+  fragment.appendChild(rendermapPin(i));
   mapPinListElement.appendChild(fragment);
-};
+}
 
 var advartisementTemplate = document.querySelector('#card')
     .content
     .querySelector('.map__card');
 
-var renderAdvartisement = function (advartisements) {
+var renderAdvartisement = function (offer, adress, photos, author) {
   var advartisementElement = advartisementTemplate.cloneNode(true);
   advartisementElement.querySelector('.popup__title').textContent = offer.title;
   advartisementElement.querySelector('.popup__text--address').textContent = offer.address;
@@ -104,7 +108,7 @@ var renderAdvartisement = function (advartisements) {
   advartisementElement.querySelector('.popup__text--time').textContent = 'Заезд после' + offer.checkin + 'выезд до' + offer.checkout;
   advartisementElement.querySelector('.popup__features').textContent = offer.features;
   advartisementElement.querySelector('..popup__description').textContent = offer.description;
-  for ( i = 0; i < photos.length - 1; i++) {
+  for (i = 0; i < photos.length - 1; i++) {
     advartisementElement.querySelector('.popup__photos').src = offer.photos;
   }
   advartisementElement.classList.remove('.popup__photos');
@@ -113,7 +117,7 @@ var renderAdvartisement = function (advartisements) {
 };
 
 var fragmentAdvartisement = document.createDocumentFragment();
-for ( j = 0; j < advartisements.length; j++) {
-  fragmentAdvartisement.appendChild(renderAdvartisement(advartisements[j]));
+for (j = 0; j < adverts.length; j++) {
+  fragmentAdvartisement.appendChild(renderAdvartisement(adverts[j]));
   mapListElement.insertBefore(fragment, '.map__filters-container');
 }
