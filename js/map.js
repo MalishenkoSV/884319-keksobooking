@@ -77,50 +77,54 @@ var mapListElement = document.querySelector('.map');
 mapListElement.classList.remove('map--faded');
 var mapPinListElement = mapListElement.querySelector('.map__pins');
 
-var mapTemplate = document.querySelector('#pin')
+var templateMap = document.querySelector('#pin')
     .content
     .querySelector('.map__pin');
 
-var renderMapPin = function () {
-  var advertMap = advert;
-  var mapPinElement = mapTemplate.cloneNode(true);
-  mapPinElement.querySelector('.map__pin').style.left = 'left: ' + advertMap.location.x + 'px';
-  mapPinElement.querySelector('.map__pin').style.top = 'top: ' + advertMap.location.y + 'px';
-  mapPinElement.src = advertMap.author.avatar;
-  mapPinElement.alt = advertMap.offer.title;
-  return mapPinElement;
+var renderMapPin = function (advertMap) {
+  advertMap = advert;
+  var mapPinTemplate = templateMap.cloneNode(true);
+  mapPinTemplate.querySelector('.map__pin').style.left = 'left:' + advertMap.location.x + 'px;';
+  mapPinTemplate.querySelector('.map__pin').style.top = 'top:' + advertMap.location.y + 'px;';
+  mapPinTemplate.src = advertMap.author.avatar;
+  mapPinTemplate.alt = advertMap.offer.title;
+  return mapPinTemplate;
 };
 
 var fragment = document.createDocumentFragment();
 for (var j = 0; j < adverts.length; j++) {
-  fragment.appendChild(renderMapPin(adverts[j]));
-  mapPinListElement.appendChild(fragment);
+  var dataElement = renderMapPin(adverts[j]);
+  fragment.appendChild(dataElement);
 }
+mapPinListElement.appendChild(fragment);
 
-var advertTemplate = document.querySelector('#card')
+
+var template = document.querySelector('#card')
     .content
     .querySelector('.map__card');
 
-var renderAdvartisement = function () {
-  var advertOffers = adverts;
-  var advertElement = advertTemplate.cloneNode(true);
-  advertElement.querySelector('.popup__title').textContent = advertOffers.offer.title;
-  advertElement.querySelector('.popup__text--address').textContent = advertOffers.offer.address;
-  advertElement.querySelector('.popup__text--price').textContent = advertOffers.offer.price + '₽/ночь';
-  advertElement.querySelector('.popup__type').textContent = advertOffers.offer.type;
-  advertElement.querySelector('.popup__text--capacity').textContent = advertOffers.offer.rooms + 'комнаты для' + advertOffers.offer.guests + 'гостей';
-  advertElement.querySelector('.popup__text--time').textContent = 'Заезд после' + advertOffers.offer.checkin + 'выезд до' + advertOffers.offer.checkout;
-  advertElement.querySelector('.popup__features').textContent = advertOffers.offer.features;
-  advertElement.querySelector('..popup__description').textContent = advertOffers.offer.description;
-  for (i = 0; i < advertOffers.offer.photos.length - 1; i++) {
-    advertElement.querySelector('.popup__photos').src = advertOffers.offer.photos;
+var renderAdvert = function (advertOffer) {
+  advertOffer = advert;
+  var advertTemplate = template.cloneNode(true);
+  advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
+  advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
+  advertTemplate.querySelector('.popup__text--price').textContent = advertOffer.offer.price + '₽/ночь';
+  advertTemplate.querySelector('.popup__type').textContent = advertOffer.offer.type;
+  advertTemplate.querySelector('.popup__text--capacity').textContent = advertOffer.offer.rooms + 'комнаты для' + advertOffer.offer.guests + 'гостей';
+  advertTemplate.querySelector('.popup__text--time').textContent = 'Заезд после' + advertOffer.checkin + 'выезд до' + advertOffer.offer.checkout;
+  advertTemplate.querySelector('.popup__features').textContent = advertOffer.offer.features;
+  advertTemplate.querySelector('..popup__description').textContent = advertOffer.offer.description;
+  for (i = 0; i < advertOffer.offer.photos.length - 1; i++) {
+    advertTemplate.querySelector('.popup__photos').src = advertOffer.offer.photos;
   }
   advert.classList.remove('.popup__photos');
-  advert.querySelector('.popup__avatar').src = advertOffers.author.avatar;
-  return advertElement;
+  advert.querySelector('.popup__avatar').src = advertOffer.author.avatar;
+  return advertTemplate;
 };
 
-var fragmentAdvartisement = document.createDocumentFragment();
+var fragmentAdvert = document.createDocumentFragment();
 for (j = 0; j < adverts.length; j++) {
-  fragmentAdvartisement.appendChild(renderAdvartisement(adverts[j]));
+  var advertElement = renderAdvert(advert[i]);
+  fragmentAdvert.appendChild(advertElement);
 }
+mapListElement.insertBefore('.map__filters-container', fragmentAdvert);
