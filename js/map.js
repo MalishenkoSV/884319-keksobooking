@@ -128,7 +128,7 @@ var renderAdvert = function (advertOffer) {
     photo.alt = 'Фотография жилья';
     fragmentForPhotos.appendChild(photo);
   }
-  advertTemplate.querySelector('popup__photos').appendChild(fragmentForPhotos);
+  advertTemplate.querySelector('.popup__photos').appendChild(fragmentForPhotos);
 
   advertTemplate.classList.remove('.popup__avatar');
   advertTemplate.querySelector('.popup__avatar').src = advertOffer.author.avatar;
