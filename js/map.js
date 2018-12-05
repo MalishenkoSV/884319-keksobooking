@@ -142,9 +142,5 @@ var renderAdvert = function (advertOffer) {
   return advertTemplate;
 };
 
-// var fragmentAdvert = document.createDocumentFragment();
-// var advertElement = renderAdvert(advert[i]);
-// fragmentAdvert.appendChild(advertElement);
-
 var mapFilter = document.querySelector('.map__filters-container');
 mapListElement.insertBefore(renderAdvert(advert[0]), mapFilter);
