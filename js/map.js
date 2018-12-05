@@ -143,4 +143,4 @@ var renderAdvert = function (advertOffer) {
 };
 
 var mapFilter = document.querySelector('.map__filters-container');
-mapListElement.insertBefore(renderAdvert(advert[0]), mapFilter);
+mapListElement.insertBefore(renderAdvert(adverts[0]), mapFilter);
