@@ -79,7 +79,7 @@ var templateMap = document.querySelector('#pin')
 
 var renderMapPin = function (advertMap) {
   var mapPinTemplate = templateMap.cloneNode(true);
-  mapPinTemplate.style.left = 'left:' + advertMap.location.x + 'px; top:' + advertMap.location.y + 'px;';
+  mapPinTemplate.style = 'left:' + advertMap.location.x + 'px; top:' + advertMap.location.y + 'px;';
   mapPinTemplate.querySelector('img').src = advertMap.author.avatar;
   mapPinTemplate.querySelector('img').alt = advertMap.offer.title;
   return mapPinTemplate;
@@ -123,7 +123,7 @@ var renderAdvert = function (advertOffer) {
     var photo = document.createElement('img');
     photo.classList.add('popup__photo');
     photo.src = advertOffer.offer.photos[j];
-    photo.widht = 45;
+    photo.width = 45;
     photo.height = 40;
     photo.alt = 'Фотография жилья';
     fragmentForPhotos.appendChild(photo);
@@ -138,13 +138,13 @@ var renderAdvert = function (advertOffer) {
     FLAT: 'Квартира',
     HOUSE: 'Дом'
   };
-  advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertTemplate.offer.type.toUpperCase()];
+  advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
   return advertTemplate;
 };
 
-var fragmentAdvert = document.createDocumentFragment();
-var advertElement = renderAdvert(advert[i]);
-fragmentAdvert.appendChild(advertElement);
+// var fragmentAdvert = document.createDocumentFragment();
+// var advertElement = renderAdvert(advert[i]);
+// fragmentAdvert.appendChild(advertElement);
 
 var mapFilter = document.querySelector('.map__filters-container');
 mapListElement.insertBefore(renderAdvert(advert[0]), mapFilter);
