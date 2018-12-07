@@ -79,6 +79,9 @@ var renderMapPin = function (advertMap) {
   mapPinTemplate.style = 'left:' + advertMap.location.x + 'px; top:' + advertMap.location.y + 'px;';
   mapPinTemplate.querySelector('img').src = advertMap.author.avatar;
   mapPinTemplate.querySelector('img').alt = advertMap.offer.title;
+  mapPinTemplate.addEventListener('mouseup', function () {
+    openPopup();
+  });
   return mapPinTemplate;
 };
 
@@ -134,12 +137,14 @@ var renderAdvert = function (advertOffer) {
     HOUSE: 'Дом'
   };
   advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
+  advertTemplate.addEventListener('mouseup', function () {
+    closePopup();
+  });
+
   return advertTemplate;
 };
-
 var mainPin = document.querySelector('.map__pin--main');
 var formAdress = document.querySelector('.ad-form');
-// var pinMap = document.querySelector('.map__pin');
 var MAPWIDTH = 1200;
 var MAPHEIDTH = 750;
 var ESC_KEYCODE = 27;
@@ -156,12 +161,6 @@ mainPin.addEventListener('mouseup', function () {
   formActive();
   setAddressCoords(MAPWIDTH / 2, MAPHEIDTH / 2);
 });
-for (i = 0; i < adverts.length; i++) {
-  var pinMap = renderMapPin(adverts[j]);
-  pinMap.addEventListener('mouseup', function () {
-    openPopup();
-  });
-}
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closePopup();
@@ -169,15 +168,9 @@ var onPopupEscPress = function (evt) {
 };
 var openPopup = function () {
   closePopup();
-  document.querySelector('.map__card').appendChild(renderAdvert(adverts[i]));
+  document.querySelector('.map__card').appendChild(advertTemplate);
   document.addEventListener('keydown', onPopupEscPress);
 };
 var closePopup = function () {
   document.querySelector('.map__card').remove();
 };
-close.addEventListener('mouseup', function () {
-  closePopup();
-});
-close.addEventListener('focus', function () {
-  onPopupEscPress();
-});
