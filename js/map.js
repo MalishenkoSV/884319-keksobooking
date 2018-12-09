@@ -28,7 +28,6 @@ var PlaceType = {
   HOUSE: 'Дом'
 };
 
-
 // 2 Обычные переменные
 var mapListElement = document.querySelector('.map');
 var filtersContainer = document.querySelector('.map__filters-container');
@@ -36,7 +35,11 @@ var templateMap = document.querySelector('#pin').content.querySelector('.map__pi
 var template = document.querySelector('#card').content.querySelector('.map__card');
 var mainPin = document.querySelector('.map__pin--main');
 var formAdress = document.querySelector('.ad-form');
-
+var title = document.querySelector('#title');
+var titleWide = document.querySelector('.ad-form__element--wide');
+var type = document.querySelector('#type');
+var price = document.querySelector('#price');
+var timein = document.querySelector('#timein');
 
 // 3 Вспомогательные функции (объявление)
 var getRandomIntegerFromInterval = function (min, max) {
@@ -132,6 +135,7 @@ var renderAdvert = function (advertOffer) {
   advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
   advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
   advertTemplate.querySelector('.popup__text--price').textContent = advertOffer.offer.price + '₽/ночь';
+
   advertTemplate.querySelector('.popup__text--capacity').textContent = advertOffer.offer.rooms + ' комнаты для ' + advertOffer.offer.guests + ' гостей';
   advertTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertOffer.offer.checkin + ' выезд до ' + advertOffer.offer.checkout;
 
@@ -169,27 +173,86 @@ var renderAdvert = function (advertOffer) {
   return advertTemplate;
 };
 
-var formActive = function () {
+
+var activeForm = function () {
   mapListElement.classList.remove('map--faded');
   formAdress.classList.remove('ad-form--disabled');
+
   document.querySelector('.map__pins').appendChild(fragment);
 };
 
 var setAddressCoords = function (x, y) {
   formAdress.querySelector('#address').value = x + ', ' + y;
 };
-
+var roomsNumber = document.querySelector('#room_number');
+var typeElement = document.querySelector('#type');
+var fieldsetTag = document.getElementsByTagName('fieldset');
+var timein = document.querySelector('#timein');
+var timeout = document.querySelector('#timeout');
 var activatePage = function () {
-  formActive();
+  activeForm();
   setAddressCoords(MAPWIDTH / 2, MAPHEIDTH / 2);
   mainPin.removeEventListener('mouseup', activatePage);
+  for (i = 1; i < 12; i++) {
+    fieldsetTag += i;
+    fieldsetTag.disabled = false;
+  }
 };
 
 mainPin.addEventListener('mouseup', activatePage);
 
-var openPopup = function (data) {
+var openPopup = function (informAdvert) {
   closePopup();
-  var card = renderAdvert(data);
+  var card = renderAdvert(informAdvert);
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
+
+type.addEventListener('сhang', function () {
+  typeElement.preventDefault();
+  if (type.value === 'bungalo') {
+    price.min = '0';
+    price.placeholder = '0';
+  }
+  if (type.value === 'flat') {
+    price.min = '1000';
+    price.placeholder = '1000';
+  }
+  if (type.value === 'house') {
+    price.min = '5000';
+    price.placeholder = '5000';
+  } else {
+    price.min = '10000';
+    price.placeholder = '10000';
+  }
+});
+var elementTime = document.querySelector('ad-form__element--time');
+elementTime.addEventListener('chang', function (evt) {
+  this.timein.value = evt.target.value;
+  this.timeout.value = evt.target.value;
+});
+roomsNumber.addEventListener('сhang', function () {
+  if (roomsNumber.value === '1') {
+    capacity.value = '1';
+  }
+  if (roomsNumber.value === '2') {
+    capacity.value = '1' || capacity.value ='2';
+  }
+  if (roomsNumber.value === '3') {
+      capacity.value = '1' || capacity.value ='2' || capacity.value = '2' || capacity.value = '3';
+  } else {
+     capacity.value = '0';
+  };
+
+function validate (capacity) {
+  if (roomsNumber.value === 1 && capacity.value === 1) {
+    return true;
+  }
+  if (roomsNumber.value === 2 && capacity.value = 1 || capacity.value = 2) {
+    return true;
+  }
+  if (roomsNumber.value === 3 && capacity.value = 1 || capacityvalue = 2 || capacity.value = 3) {
+    return true;
+  }else {
+    return false;
+  }
