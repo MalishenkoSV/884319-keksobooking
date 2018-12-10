@@ -25,9 +25,20 @@ var PlaceType = {
   BUNGALO: 'Бунгало',
   PALACE: 'Дворец',
   FLAT: 'Квартира',
-  HOUSE: 'Дом'
+  HOUSE: 'Дом',
 };
-
+var MinPrice = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000,
+};
+var RoomToGuest = {
+  ROOM_1: ['1'],
+  ROOM_2: ['1', '2'],
+  ROOM_3: ['1', '2', '3'],
+  ROOM_100: ['0'],
+};
 // 2 Обычные переменные
 var mapListElement = document.querySelector('.map');
 var filtersContainer = document.querySelector('.map__filters-container');
@@ -35,11 +46,14 @@ var templateMap = document.querySelector('#pin').content.querySelector('.map__pi
 var template = document.querySelector('#card').content.querySelector('.map__card');
 var mainPin = document.querySelector('.map__pin--main');
 var formAdress = document.querySelector('.ad-form');
-var title = document.querySelector('#title');
-var titleWide = document.querySelector('.ad-form__element--wide');
 var type = document.querySelector('#type');
 var price = document.querySelector('#price');
 var timein = document.querySelector('#timein');
+var timeout = document.querySelector('#timeout');
+var button = document.querySelector('button');
+var fieldsetList = formAdress.querySelectorAll('fieldset');
+var roomSelect = document.querySelector('#room_number');
+var guestSelect = document.querySelector('#capacity');
 
 // 3 Вспомогательные функции (объявление)
 var getRandomIntegerFromInterval = function (min, max) {
@@ -93,7 +107,6 @@ var createAdvert = function (k) {
 };
 
 var adverts = [];
-
 for (var i = 0; i < COUNT; i++) {
   var advert = createAdvert(i);
   adverts.push(advert);
@@ -163,38 +176,26 @@ var renderAdvert = function (advertOffer) {
     fragmentForPhotos.appendChild(photo);
   }
   advertTemplate.querySelector('.popup__photos').appendChild(fragmentForPhotos);
-
   advertTemplate.classList.remove('.popup__avatar');
   advertTemplate.querySelector('.popup__avatar').src = advertOffer.author.avatar;
   advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
-
   advertTemplate.querySelector('.popup__close').addEventListener('click', closePopup);
-
   return advertTemplate;
 };
-
-
 var activeForm = function () {
   mapListElement.classList.remove('map--faded');
   formAdress.classList.remove('ad-form--disabled');
-
   document.querySelector('.map__pins').appendChild(fragment);
 };
-
 var setAddressCoords = function (x, y) {
   formAdress.querySelector('#address').value = x + ', ' + y;
 };
-var roomsNumber = document.querySelector('#room_number');
-var typeElement = document.querySelector('#type');
-var fieldsetTag = document.getElementsByTagName('fieldset');
-var timein = document.querySelector('#timein');
-var timeout = document.querySelector('#timeout');
 var activatePage = function () {
   activeForm();
   setAddressCoords(MAPWIDTH / 2, MAPHEIDTH / 2);
   mainPin.removeEventListener('mouseup', activatePage);
-  for (i = 1; i < 12; i++) {
-    fieldsetTag += i;
+  for (i = 0; i < fieldsetList.length; i++) {
+    var fieldsetTag = fieldsetList[i];
     fieldsetTag.disabled = false;
   }
 };
@@ -207,52 +208,32 @@ var openPopup = function (informAdvert) {
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
-
-type.addEventListener('сhang', function () {
-  typeElement.preventDefault();
-  if (type.value === 'bungalo') {
-    price.min = '0';
-    price.placeholder = '0';
-  }
-  if (type.value === 'flat') {
-    price.min = '1000';
-    price.placeholder = '1000';
-  }
-  if (type.value === 'house') {
-    price.min = '5000';
-    price.placeholder = '5000';
-  } else {
-    price.min = '10000';
-    price.placeholder = '10000';
-  }
+type.addEventListener('сhange', function () {
+  price.min = MinPrice[type.value.toUpperCase()];
+  price.placeholder = MinPrice[type.value.toUpperCase()];
 });
-var elementTime = document.querySelector('ad-form__element--time');
-elementTime.addEventListener('chang', function (evt) {
-  this.timein.value = evt.target.value;
-  this.timeout.value = evt.target.value;
+timein.addEventListener('change', function (evt) {
+  timein.value = evt.target.value;
 });
-roomsNumber.addEventListener('сhang', function () {
-  if (roomsNumber.value === '1') {
-    capacity.value = '1';
+timeout.addEventListener('change', function (evt) {
+  timeout.value = evt.target.value;
+});
+var validateGuestAndRoom = function () {
+  var guests = RoomToGuest['ROOM_' + roomSelect.value];
+  var isMatch = false;
+  for (i = 0; i < guests.length - 1; i++) {
+    if (guests[i] === guestSelect.value) {
+      isMatch = true;
+      break;
+    }
   }
-  if (roomsNumber.value === '2') {
-    capacity.value = '1' || capacity.value ='2';
-  }
-  if (roomsNumber.value === '3') {
-      capacity.value = '1' || capacity.value ='2' || capacity.value = '2' || capacity.value = '3';
+  if (isMatch) {
+    roomSelect.setCustomValidity('');
   } else {
-     capacity.value = '0';
-  };
-
-function validate (capacity) {
-  if (roomsNumber.value === 1 && capacity.value === 1) {
-    return true;
+    roomSelect.setCustomValidity('Количество гостей больше возможного');
   }
-  if (roomsNumber.value === 2 && capacity.value = 1 || capacity.value = 2) {
-    return true;
-  }
-  if (roomsNumber.value === 3 && capacity.value = 1 || capacityvalue = 2 || capacity.value = 3) {
-    return true;
-  }else {
-    return false;
-  }
+};
+var onSubmitClick = function () {
+  validateGuestAndRoom();
+};
+button.addEventListener('click', onSubmitClick);
