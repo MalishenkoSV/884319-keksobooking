@@ -221,7 +221,7 @@ timeout.addEventListener('change', function (evt) {
 var validateGuestAndRoom = function () {
   var guests = RoomToGuest['ROOM_' + roomSelect.value];
   var isMatch = false;
-  for (i = 0; i < guests.length - 1; i++) {
+  for (i = 0; i < guests.length; i++) {
     if (guests[i] === guestSelect.value) {
       isMatch = true;
       break;
