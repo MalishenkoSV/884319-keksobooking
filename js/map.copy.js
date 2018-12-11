@@ -5,10 +5,10 @@ var COUNT = 8;
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
-var CLOUD_X_MIN = 156;
-var CLOUD_X_MAX = 1200;
-var CLOUD_Y_MIN = 156;
-var CLOUD_Y_MAX = 704;
+var CLOUD_X_MIN = 35;
+var CLOUD_X_MAX = 1165;
+var CLOUD_Y_MIN = 130;
+var CLOUD_Y_MAX = 630;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS_MAX = 5;
 var ROOMS_MIN = 1;
@@ -50,10 +50,10 @@ var type = document.querySelector('#type');
 var price = document.querySelector('#price');
 var timein = document.querySelector('#timein');
 var timeout = document.querySelector('#timeout');
-var button = document.querySelector('.ad-form__submit');
+var button = document.querySelector('button');
 var fieldsetList = formAdress.querySelectorAll('fieldset');
 var roomSelect = document.querySelector('#room_number');
-var capacitySelect = document.querySelector('#capacity');
+var guestSelect = document.querySelector('#capacity');
 
 // 3 Вспомогательные функции (объявление)
 var getRandomIntegerFromInterval = function (min, max) {
@@ -182,6 +182,7 @@ var renderAdvert = function (advertOffer) {
   advertTemplate.querySelector('.popup__close').addEventListener('click', closePopup);
   return advertTemplate;
 };
+// Активация страницы
 var activeForm = function () {
   mapListElement.classList.remove('map--faded');
   formAdress.classList.remove('ad-form--disabled');
@@ -200,29 +201,29 @@ var activatePage = function () {
   }
 };
 
-mainPin.addEventListener('mouseup', activatePage);
-
 var openPopup = function (informAdvert) {
   closePopup();
   var card = renderAdvert(informAdvert);
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
+
+//
 type.addEventListener('сhange', function () {
   price.min = MinPrice[type.value.toUpperCase()];
   price.placeholder = MinPrice[type.value.toUpperCase()];
 });
 timein.addEventListener('change', function (evt) {
-  timeout.value = evt.target.value;
-});
-timeout.addEventListener('change', function (evt) {
   timein.value = evt.target.value;
 });
+timeout.addEventListener('change', function (evt) {
+  timeout.value = evt.target.value;
+});
 var validateGuestAndRoom = function () {
-  var capacities = RoomToGuest['ROOM_' + roomSelect.value];
+  var guests = RoomToGuest['ROOM_' + roomSelect.value];
   var isMatch = false;
-  for (i = 0; i < capacities.length; i++) {
-    if (capacities[i] === capacitySelect.value) {
+  for (i = 0; i < guests.length - 1; i++) {
+    if (guests[i] === guestSelect.value) {
       isMatch = true;
       break;
     }
@@ -237,3 +238,52 @@ var onSubmitClick = function () {
   validateGuestAndRoom();
 };
 button.addEventListener('click', onSubmitClick);
+
+// drag.js
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  mainPin.addEventListener('mouseup', activatePage);
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var dragged = false;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+    mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    setAddressCoords(startCoords);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (dragged) {
+      var onClickPreventDefault = function () {
+        evt.preventDefault();
+        mainPin.removeEventListener('click', onClickPreventDefault);
+      };
+      mainPin.addEventListener('click', onClickPreventDefault);
+    }
+
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
