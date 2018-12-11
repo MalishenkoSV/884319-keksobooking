@@ -46,14 +46,14 @@ var templateMap = document.querySelector('#pin').content.querySelector('.map__pi
 var template = document.querySelector('#card').content.querySelector('.map__card');
 var mainPin = document.querySelector('.map__pin--main');
 var formAdress = document.querySelector('.ad-form');
-var type = document.querySelector('#type');
-var price = document.querySelector('#price');
-var timein = document.querySelector('#timein');
-var timeout = document.querySelector('#timeout');
-var button = document.querySelector('.ad-form__submit');
+var typeSelect = formAdress.querySelector('#type');
+var priceSelect = formAdress.querySelector('#price');
+var timeinSelect = formAdress.querySelector('#timein');
+var timeoutSelect = formAdress.querySelector('#timeout');
+var button = formAdress.querySelector('.ad-form__submit');
 var fieldsetList = formAdress.querySelectorAll('fieldset');
-var roomSelect = document.querySelector('#room_number');
-var capacitySelect = document.querySelector('#capacity');
+var roomSelect = formAdress.querySelector('#room_number');
+var guestSelect = formAdress.querySelector('#capacity');
 
 // 3 Вспомогательные функции (объявление)
 var getRandomIntegerFromInterval = function (min, max) {
@@ -208,21 +208,22 @@ var openPopup = function (informAdvert) {
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
-type.addEventListener('сhange', function () {
-  price.min = MinPrice[type.value.toUpperCase()];
-  price.placeholder = MinPrice[type.value.toUpperCase()];
+typeSelect.addEventListener('сhange', function () {
+  priceSelect.min = MinPrice[typeSelect.value.toUpperCase()];
+  priceSelect.placeholder = MinPrice[typeSelect.value.toUpperCase()];
 });
-timein.addEventListener('change', function (evt) {
-  timeout.value = evt.target.value;
+
+timeinSelect.addEventListener('change', function (evt) {
+  timeoutSelect.value = evt.target.value;
 });
-timeout.addEventListener('change', function (evt) {
-  timein.value = evt.target.value;
+timeoutSelect.addEventListener('change', function (evt) {
+  timeinSelect.value = evt.target.value;
 });
 var validateGuestAndRoom = function () {
-  var capacities = RoomToGuest['ROOM_' + roomSelect.value];
+  var rooms = RoomToGuest['ROOM_' + roomSelect.value];
   var isMatch = false;
-  for (i = 0; i < capacities.length; i++) {
-    if (capacities[i] === capacitySelect.value) {
+  for (i = 0; i < rooms.length; i++) {
+    if (rooms[i] === guestSelect.value) {
       isMatch = true;
       break;
     }
