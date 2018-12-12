@@ -208,7 +208,7 @@ var openPopup = function (informAdvert) {
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
-typeSelect.addEventListener('сhange', function () {
+typeSelect.addEventListener('change', function () {
   priceSelect.min = MinPrice[typeSelect.value.toUpperCase()];
   priceSelect.placeholder = MinPrice[typeSelect.value.toUpperCase()];
 });
