@@ -25,10 +25,20 @@ var PlaceType = {
   BUNGALO: 'Бунгало',
   PALACE: 'Дворец',
   FLAT: 'Квартира',
-  HOUSE: 'Дом'
+  HOUSE: 'Дом',
 };
-
-
+var MinPrice = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000,
+};
+var RoomToGuest = {
+  ROOM_1: ['1'],
+  ROOM_2: ['1', '2'],
+  ROOM_3: ['1', '2', '3'],
+  ROOM_100: ['0'],
+};
 // 2 Обычные переменные
 var mapListElement = document.querySelector('.map');
 var filtersContainer = document.querySelector('.map__filters-container');
@@ -36,7 +46,14 @@ var templateMap = document.querySelector('#pin').content.querySelector('.map__pi
 var template = document.querySelector('#card').content.querySelector('.map__card');
 var mainPin = document.querySelector('.map__pin--main');
 var formAdress = document.querySelector('.ad-form');
-
+var typeSelect = formAdress.querySelector('#type');
+var priceSelect = formAdress.querySelector('#price');
+var timeinSelect = formAdress.querySelector('#timein');
+var timeoutSelect = formAdress.querySelector('#timeout');
+var button = formAdress.querySelector('.ad-form__submit');
+var fieldsetList = formAdress.querySelectorAll('fieldset');
+var roomSelect = formAdress.querySelector('#room_number');
+var guestSelect = formAdress.querySelector('#capacity');
 
 // 3 Вспомогательные функции (объявление)
 var getRandomIntegerFromInterval = function (min, max) {
@@ -90,7 +107,6 @@ var createAdvert = function (k) {
 };
 
 var adverts = [];
-
 for (var i = 0; i < COUNT; i++) {
   var advert = createAdvert(i);
   adverts.push(advert);
@@ -132,6 +148,7 @@ var renderAdvert = function (advertOffer) {
   advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
   advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
   advertTemplate.querySelector('.popup__text--price').textContent = advertOffer.offer.price + '₽/ночь';
+
   advertTemplate.querySelector('.popup__text--capacity').textContent = advertOffer.offer.rooms + ' комнаты для ' + advertOffer.offer.guests + ' гостей';
   advertTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertOffer.offer.checkin + ' выезд до ' + advertOffer.offer.checkout;
 
@@ -159,37 +176,65 @@ var renderAdvert = function (advertOffer) {
     fragmentForPhotos.appendChild(photo);
   }
   advertTemplate.querySelector('.popup__photos').appendChild(fragmentForPhotos);
-
   advertTemplate.classList.remove('.popup__avatar');
   advertTemplate.querySelector('.popup__avatar').src = advertOffer.author.avatar;
   advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
-
   advertTemplate.querySelector('.popup__close').addEventListener('click', closePopup);
-
   return advertTemplate;
 };
-
-var formActive = function () {
+var activeForm = function () {
   mapListElement.classList.remove('map--faded');
   formAdress.classList.remove('ad-form--disabled');
   document.querySelector('.map__pins').appendChild(fragment);
 };
-
 var setAddressCoords = function (x, y) {
   formAdress.querySelector('#address').value = x + ', ' + y;
 };
-
 var activatePage = function () {
-  formActive();
+  activeForm();
   setAddressCoords(MAPWIDTH / 2, MAPHEIDTH / 2);
   mainPin.removeEventListener('mouseup', activatePage);
+  for (i = 0; i < fieldsetList.length; i++) {
+    var fieldsetTag = fieldsetList[i];
+    fieldsetTag.disabled = false;
+  }
 };
 
 mainPin.addEventListener('mouseup', activatePage);
 
-var openPopup = function (data) {
+var openPopup = function (informAdvert) {
   closePopup();
-  var card = renderAdvert(data);
+  var card = renderAdvert(informAdvert);
   mapListElement.insertBefore(card, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
+typeSelect.addEventListener('change', function () {
+  priceSelect.min = MinPrice[typeSelect.value.toUpperCase()];
+  priceSelect.placeholder = MinPrice[typeSelect.value.toUpperCase()];
+});
+
+timeinSelect.addEventListener('change', function (evt) {
+  timeoutSelect.value = evt.target.value;
+});
+timeoutSelect.addEventListener('change', function (evt) {
+  timeinSelect.value = evt.target.value;
+});
+var validateGuestAndRoom = function () {
+  var rooms = RoomToGuest['ROOM_' + roomSelect.value];
+  var isMatch = false;
+  for (i = 0; i < rooms.length; i++) {
+    if (rooms[i] === guestSelect.value) {
+      isMatch = true;
+      break;
+    }
+  }
+  if (isMatch) {
+    roomSelect.setCustomValidity('');
+  } else {
+    roomSelect.setCustomValidity('Количество гостей больше возможного');
+  }
+};
+var onSubmitClick = function () {
+  validateGuestAndRoom();
+};
+button.addEventListener('click', onSubmitClick);
