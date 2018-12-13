@@ -5,10 +5,14 @@ var COUNT = 8;
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
-var CLOUD_X_MIN = 156;
+var CLOUD_X_MIN = 0;
 var CLOUD_X_MAX = 1200;
-var CLOUD_Y_MIN = 156;
-var CLOUD_Y_MAX = 704;
+var CLOUD_Y_MIN = 0;
+var CLOUD_Y_MAX = 750;
+var MAP_WIDTH = 1140;
+var MAP_HEIDTH = 750;
+var MAIN_PIN_HEIGHT = 62;
+var MAIN_PIN_WIDTH = 62;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS_MAX = 5;
 var ROOMS_MIN = 1;
@@ -18,8 +22,7 @@ var CHECKIN_TIME = ['12:00', '13:00', '14:00'];
 var CHECKOUT_TIME = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var MAPWIDTH = 1200;
-var MAPHEIDTH = 750;
+
 var ESC_KEYCODE = 27;
 var PlaceType = {
   BUNGALO: 'Бунгало',
@@ -192,16 +195,13 @@ var setAddressCoords = function (x, y) {
 };
 var activatePage = function () {
   activeForm();
-  setAddressCoords(MAPWIDTH / 2, MAPHEIDTH / 2);
+  setAddressCoords(MAP_WIDTH / 2, MAP_HEIDTH / 2);
   mainPin.removeEventListener('mouseup', activatePage);
   for (i = 0; i < fieldsetList.length; i++) {
     var fieldsetTag = fieldsetList[i];
     fieldsetTag.disabled = false;
   }
 };
-
-mainPin.addEventListener('mouseup', activatePage);
-
 var openPopup = function (informAdvert) {
   closePopup();
   var card = renderAdvert(informAdvert);
@@ -238,3 +238,72 @@ var onSubmitClick = function () {
   validateGuestAndRoom();
 };
 button.addEventListener('click', onSubmitClick);
+
+
+// drag.js
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+  activatePage();
+  mainPin.addEventListener('mouseup', activatePage);
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  var dragged = false;
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    var pinCoords = {
+      x: mainPin.offsetLeft - shift.x,
+      y: mainPin.offsetTop - shift.y
+    };
+    var TAIL_HEIGTH = 22;
+    var BORDER_MIN_TOP = 130;
+    var BORDER_MAX_BOTTOM = 630;
+    var TOTAL_PIN_HEIGTH = MAIN_PIN_HEIGHT + TAIL_HEIGTH;
+
+    var MapBorderSide = {
+      LEFT: CLOUD_X_MIN + MAIN_PIN_WIDTH / 2,
+      RIGHT: CLOUD_X_MAX - MAIN_PIN_WIDTH / 2,
+      TOP: BORDER_MIN_TOP - TOTAL_PIN_HEIGTH,
+      BOTTOM: BORDER_MAX_BOTTOM - TOTAL_PIN_HEIGTH,
+    };
+    if (startCoords.x >= MapBorderSide.LEFT && startCoords.x <= MapBorderSide.RIGHT) {
+      mainPin.style.left = pinCoords.x + 'px';
+      pinStatusCoords.x = pinCoords.x + MAIN_PIN_WIDTH / 2;
+    }
+    if (startCoords.y >= MapBorderSide.TOP && startCoords.y <= MapBorderSide.BOTTOM) {
+      mainPin.style.top = pinCoords.y + 'px';
+      pinStatusCoords.y = pinCoords.y + TOTAL_PIN_HEIGTH;
+    }
+    setAddressCoords(pinStatusCoords.x, pinStatusCoords.y);
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    activatePage();
+    setAddressCoords(pinStatusCords.x, pinStatusCords.y);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (dragged) {
+      var onClickPreventDefault = function () {
+        evt.preventDefault();
+        mainPin.removeEventListener('click', onClickPreventDefault);
+      };
+      mainPin.addEventListener('click', onClickPreventDefault);
+    }
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
