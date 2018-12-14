@@ -5,14 +5,13 @@ var COUNT = 8;
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
-var CLOUD_X_MIN = 0;
-var CLOUD_X_MAX = 1200;
-var CLOUD_Y_MIN = 0;
-var CLOUD_Y_MAX = 750;
-var MAP_WIDTH = 1140;
-var MAP_HEIDTH = 750;
-var MAIN_PIN_HEIGHT = 62;
-var MAIN_PIN_WIDTH = 62;
+var MAP_WIDTH = 1200;
+var MAP_HEIGTH = 750;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_WIDTH = 65;
+var BORDER_MIN_TOP = 130;
+var BORDER_MAX_BOTTOM = 630;
+var MAIN_PIN_HEIGHT = 81;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS_MAX = 5;
 var ROOMS_MIN = 1;
@@ -82,8 +81,9 @@ var getRandomSubarray = function (arr) {
 
 // 4 Код программы
 var createAdvert = function (k) {
-  var x = getRandomIntegerFromInterval(CLOUD_X_MIN, CLOUD_X_MAX);
   var y = getRandomIntegerFromInterval(CLOUD_Y_MIN, CLOUD_Y_MAX);
+  var x = getRandomIntegerFromInterval(0, MAP_WIDTH);
+  var y = getRandomIntegerFromInterval(0, MAP_HEIGTH);
   var advertObject = {
     author: {
       avatar: 'img/avatars/user0' + (k + 1) + '.png'
@@ -195,7 +195,7 @@ var setAddressCoords = function (x, y) {
 };
 var activatePage = function () {
   activeForm();
-  setAddressCoords(MAP_WIDTH / 2, MAP_HEIDTH / 2);
+  setAddressCoords(MAP_WIDTH / 2, MAP_HEIGTH / 2);
   mainPin.removeEventListener('mouseup', activatePage);
   for (i = 0; i < fieldsetList.length; i++) {
     var fieldsetTag = fieldsetList[i];
@@ -241,68 +241,49 @@ button.addEventListener('click', onSubmitClick);
 
 
 // drag.js
-mainPin.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
+mainPin.addEventListener('mousedown', function (mouseMoveEvt) {
   activatePage();
-  mainPin.addEventListener('mouseup', activatePage);
-  var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
+  var pinStatusCoords = {
+    x: MAP_WIDTH / 2 + MAIN_PIN_WIDTH / 2,
+    y: MAP_HEIGTH / 2 + MAIN_PIN_HEIGHT
   };
-  var dragged = false;
-  var onMouseMove = function (moveEvt) {
-    moveEvt.preventDefault();
-    dragged = true;
-
+  var startCoords = {
+    x: mouseMoveEvt.clientX,
+    y: mouseMoveEvt.clientY
+  };
+  var onMouseMove = function (mouseMoveEvt) {
     var shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: startCoords.y - moveEvt.clientY
+      x: startCoords.x - mouseMoveEvt.clientX,
+      y: startCoords.y - mouseMoveEvt.clientY
     };
-
     startCoords = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
+      x: mouseMoveEvt.clientX,
+      y: mouseMoveEvt.clientY
     };
     var pinCoords = {
       x: mainPin.offsetLeft - shift.x,
       y: mainPin.offsetTop - shift.y
     };
-    var TAIL_HEIGTH = 22;
-    var BORDER_MIN_TOP = 130;
-    var BORDER_MAX_BOTTOM = 630;
-    var TOTAL_PIN_HEIGTH = MAIN_PIN_HEIGHT + TAIL_HEIGTH;
-
-    var MapBorderSide = {
-      LEFT: CLOUD_X_MIN + MAIN_PIN_WIDTH / 2,
-      RIGHT: CLOUD_X_MAX - MAIN_PIN_WIDTH / 2,
-      TOP: BORDER_MIN_TOP - TOTAL_PIN_HEIGTH,
-      BOTTOM: BORDER_MAX_BOTTOM - TOTAL_PIN_HEIGTH,
+    var border = {
+      left: 0,
+      right: MAP_WIDTH - MAIN_PIN_WIDTH,
+      top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT ,
+      bottom: BORDER_MAX_BOTTOM - MAIN_PIN_HEIGHT
     };
-    if (startCoords.x >= MapBorderSide.LEFT && startCoords.x <= MapBorderSide.RIGHT) {
+    if (startCoords.x >= border.left && startCoords.x <= border.rigth) {
       mainPin.style.left = pinCoords.x + 'px';
       pinStatusCoords.x = pinCoords.x + MAIN_PIN_WIDTH / 2;
     }
-    if (startCoords.y >= MapBorderSide.TOP && startCoords.y <= MapBorderSide.BOTTOM) {
+    if (startCoords.y >= border.top && startCoords.y <= border.bottom) {
       mainPin.style.top = pinCoords.y + 'px';
-      pinStatusCoords.y = pinCoords.y + TOTAL_PIN_HEIGTH;
+      pinStatusCoords.y = pinCoords.y + MAIN_PIN_HEIGHT;
     }
     setAddressCoords(pinStatusCoords.x, pinStatusCoords.y);
   };
-
-  var onMouseUp = function (upEvt) {
-    upEvt.preventDefault();
-    activatePage();
+    var onMouseUp = function () {
     setAddressCoords(pinStatusCords.x, pinStatusCords.y);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
-
-    if (dragged) {
-      var onClickPreventDefault = function () {
-        evt.preventDefault();
-        mainPin.removeEventListener('click', onClickPreventDefault);
-      };
-      mainPin.addEventListener('click', onClickPreventDefault);
-    }
   };
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
