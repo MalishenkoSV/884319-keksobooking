@@ -7,7 +7,6 @@ var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
 var MAP_WIDTH = 1200;
 var MAP_HEIGTH = 750;
-var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
 var BORDER_MIN_TOP = 130;
 var BORDER_MAX_BOTTOM = 630;
@@ -21,7 +20,6 @@ var CHECKIN_TIME = ['12:00', '13:00', '14:00'];
 var CHECKOUT_TIME = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
 var ESC_KEYCODE = 27;
 var PlaceType = {
   BUNGALO: 'Бунгало',
@@ -81,7 +79,6 @@ var getRandomSubarray = function (arr) {
 
 // 4 Код программы
 var createAdvert = function (k) {
-  var y = getRandomIntegerFromInterval(CLOUD_Y_MIN, CLOUD_Y_MAX);
   var x = getRandomIntegerFromInterval(0, MAP_WIDTH);
   var y = getRandomIntegerFromInterval(0, MAP_HEIGTH);
   var advertObject = {
@@ -125,7 +122,6 @@ var renderMapPin = function (advertData) {
   });
   return mapPinTemplate;
 };
-
 var fragment = document.createDocumentFragment();
 for (var j = 0; j < adverts.length; j++) {
   var dataElement = renderMapPin(adverts[j]);
@@ -151,10 +147,8 @@ var renderAdvert = function (advertOffer) {
   advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
   advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
   advertTemplate.querySelector('.popup__text--price').textContent = advertOffer.offer.price + '₽/ночь';
-
   advertTemplate.querySelector('.popup__text--capacity').textContent = advertOffer.offer.rooms + ' комнаты для ' + advertOffer.offer.guests + ' гостей';
   advertTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertOffer.offer.checkin + ' выезд до ' + advertOffer.offer.checkout;
-
   advertTemplate.querySelector('.popup__features').innerHTML = '';
   var fragmentForFeatures = document.createDocumentFragment();
   for (var m = 0; m < advertOffer.offer.features.length; m++) {
@@ -166,7 +160,6 @@ var renderAdvert = function (advertOffer) {
   }
   advertTemplate.querySelector('.popup__features').appendChild(fragmentForFeatures);
   advertTemplate.querySelector('.popup__description').textContent = advertOffer.offer.description;
-
   advertTemplate.querySelector('.popup__photos').innerHTML = '';
   var fragmentForPhotos = document.createDocumentFragment();
   for (j = 0; j < advertOffer.offer.photos.length; j++) {
@@ -204,8 +197,8 @@ var activatePage = function () {
 };
 var openPopup = function (informAdvert) {
   closePopup();
-  var card = renderAdvert(informAdvert);
-  mapListElement.insertBefore(card, filtersContainer);
+  var cardAdd = renderAdvert(informAdvert);
+  mapListElement.insertBefore(cardAdd, filtersContainer);
   document.addEventListener('keydown', onPopupEscPress);
 };
 typeSelect.addEventListener('change', function () {
@@ -244,44 +237,49 @@ button.addEventListener('click', onSubmitClick);
 mainPin.addEventListener('mousedown', function (mouseMoveEvt) {
   activatePage();
   var pinStatusCoords = {
-    x: MAP_WIDTH / 2 + MAIN_PIN_WIDTH / 2,
-    y: MAP_HEIGTH / 2 + MAIN_PIN_HEIGHT
+    x: MAP_WIDTH / 2 - MAIN_PIN_WIDTH / 2,
+    y: MAP_HEIGTH / 2 - MAIN_PIN_HEIGHT
   };
+
   var startCoords = {
     x: mouseMoveEvt.clientX,
     y: mouseMoveEvt.clientY
   };
-  var onMouseMove = function (mouseMoveEvt) {
+
+  var onMouseMove = function () {
     var shift = {
       x: startCoords.x - mouseMoveEvt.clientX,
       y: startCoords.y - mouseMoveEvt.clientY
     };
+
     startCoords = {
       x: mouseMoveEvt.clientX,
       y: mouseMoveEvt.clientY
     };
+
     var pinCoords = {
       x: mainPin.offsetLeft - shift.x,
       y: mainPin.offsetTop - shift.y
     };
+
     var border = {
-      left: 0,
+      left: MAIN_PIN_WIDTH,
       right: MAP_WIDTH - MAIN_PIN_WIDTH,
-      top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT ,
+      top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT,
       bottom: BORDER_MAX_BOTTOM - MAIN_PIN_HEIGHT
     };
-    if (startCoords.x >= border.left && startCoords.x <= border.rigth) {
+    if (pinCoords.x >= border.left && pinCoords.x <= border.rigth) {
       mainPin.style.left = pinCoords.x + 'px';
       pinStatusCoords.x = pinCoords.x + MAIN_PIN_WIDTH / 2;
     }
-    if (startCoords.y >= border.top && startCoords.y <= border.bottom) {
+    if (pinCoords.y >= border.top && pinCoords.y <= border.bottom) {
       mainPin.style.top = pinCoords.y + 'px';
       pinStatusCoords.y = pinCoords.y + MAIN_PIN_HEIGHT;
     }
     setAddressCoords(pinStatusCoords.x, pinStatusCoords.y);
   };
-    var onMouseUp = function () {
-    setAddressCoords(pinStatusCords.x, pinStatusCords.y);
+  var onMouseUp = function () {
+    setAddressCoords(pinStatusCoords.x, pinStatusCoords.y);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
