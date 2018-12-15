@@ -234,7 +234,7 @@ button.addEventListener('click', onSubmitClick);
 
 
 // drag.js
-mainPin.addEventListener('mousedown', function (mouseMoveEvt) {
+mainPin.addEventListener('mousedown', function (mousedownEvt) {
   activatePage();
   var pinStatusCoords = {
     x: MAP_WIDTH / 2 - MAIN_PIN_WIDTH / 2,
@@ -242,11 +242,11 @@ mainPin.addEventListener('mousedown', function (mouseMoveEvt) {
   };
 
   var startCoords = {
-    x: mouseMoveEvt.clientX,
-    y: mouseMoveEvt.clientY
+    x: mousedownEvt.clientX,
+    y: mousedownEvt.clientY
   };
 
-  var onMouseMove = function () {
+  var onMouseMove = function (mouseMoveEvt) {
     var shift = {
       x: startCoords.x - mouseMoveEvt.clientX,
       y: startCoords.y - mouseMoveEvt.clientY
@@ -263,12 +263,12 @@ mainPin.addEventListener('mousedown', function (mouseMoveEvt) {
     };
 
     var border = {
-      left: MAIN_PIN_WIDTH,
+      left: 0,
       right: MAP_WIDTH - MAIN_PIN_WIDTH,
       top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT,
       bottom: BORDER_MAX_BOTTOM - MAIN_PIN_HEIGHT
     };
-    if (pinCoords.x >= border.left && pinCoords.x <= border.rigth) {
+    if (pinCoords.x >= border.left && pinCoords.x <= border.right) {
       mainPin.style.left = pinCoords.x + 'px';
       pinStatusCoords.x = pinCoords.x + MAIN_PIN_WIDTH / 2;
     }
