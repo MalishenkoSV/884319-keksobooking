@@ -266,7 +266,7 @@ mainPin.addEventListener('mousedown', function (mousedownEvt) {
       left: 0,
       right: MAP_WIDTH - MAIN_PIN_WIDTH,
       top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT,
-      bottom: BORDER_MAX_BOTTOM + MAIN_PIN_HEIGHT
+      bottom: BORDER_MAX_BOTTOM - MAIN_PIN_HEIGHT
     };
     if (pinCoords.x >= border.left && pinCoords.x <= border.right) {
       mainPin.style.left = pinCoords.x + 'px';
