@@ -11,7 +11,6 @@ var MAIN_PIN_WIDTH = 65;
 var BORDER_MIN_TOP = 130;
 var BORDER_MAX_BOTTOM = 630;
 var MAIN_PIN_HEIGHT = 81;
-var PIN_HEIGHT = 65;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS_MAX = 5;
 var ROOMS_MIN = 1;
