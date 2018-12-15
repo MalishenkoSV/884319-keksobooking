@@ -11,7 +11,6 @@ var MAIN_PIN_WIDTH = 65;
 var BORDER_MIN_TOP = 130;
 var BORDER_MAX_BOTTOM = 630;
 var MAIN_PIN_HEIGHT = 81;
-var PIN_HEIGHT = 65;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS_MAX = 5;
 var ROOMS_MIN = 1;
@@ -266,8 +265,9 @@ mainPin.addEventListener('mousedown', function (mousedownEvt) {
     var border = {
       left: 0,
       right: MAP_WIDTH - MAIN_PIN_WIDTH,
-      top: BORDER_MIN_TOP - PIN_HEIGHT,
-      bottom: BORDER_MAX_BOTTOM + MAIN_PIN_HEIGHT
+      top: BORDER_MIN_TOP - MAIN_PIN_HEIGHT,
+      bottom: BORDER_MAX_BOTTOM - MAIN_PIN_HEIGHT
+
     };
     if (pinCoords.x >= border.left && pinCoords.x <= border.right) {
       mainPin.style.left = pinCoords.x + 'px';
