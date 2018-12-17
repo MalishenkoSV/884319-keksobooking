@@ -1,13 +1,17 @@
 'use strict';
 (function () {
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+  var filtersContainer = document.querySelector('.map__filters-container');
+  var template = document.querySelector('#card').content.querySelector('.map__card');
+  var mapListElement = document.querySelector('.map');
   var PlaceType = {
     BUNGALO: 'Бунгало',
     PALACE: 'Дворец',
     FLAT: 'Квартира',
     HOUSE: 'Дом',
   };
-  var template = document.querySelector('#card').content.querySelector('.map__card');
-  var renderAdvert = function (advertOffer) {
+  var createAdvert = function (advertOffer) {
     var advertTemplate = template.cloneNode(true);
     advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
     advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
@@ -43,7 +47,33 @@
     advertTemplate.querySelector('.popup__close').addEventListener('click', window.form.close);
     return advertTemplate;
   };
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closePopup();
+    }
+  };
+  var onPopupEnterPress = function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      closePopup();
+    }
+  };
+  var closePopup = function () {
+    var card = document.querySelector('.map__card');
+    if (card) {
+      card.remove();
+    }
+    document.addEventListener('keydown', onPopupEscPress);
+    card.addEventListener('click', closePopup);
+    card.addEventListener('keydown', onPopupEnterPress);
+  };
+  var showCardOnMap = function (informAdvert) {
+    closePopup();
+    var cardAdd = createAdvert(informAdvert);
+    mapListElement.insertBefore(cardAdd, filtersContainer);
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
+
   window.card = {
-    render: renderAdvert
+    show: showCardOnMap
   };
 })();

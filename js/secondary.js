@@ -18,9 +18,9 @@
     return shuffledArray.slice(0, randomEndIndex);
   };
   window.secondary = {
-    randomInteger: getRandomIntegerFromInterval,
-    randomElement: getRandomElementFromArray,
-    shuffle: shuffleArray,
-    get: getRandomSubarray
+    getRandomIntegerFromInterval: getRandomIntegerFromInterval,
+    getRandomElementFromArray: getRandomElementFromArray,
+    shuffleArray: shuffleArray,
+    getRandomSubarray: getRandomSubarray
   };
 })();
