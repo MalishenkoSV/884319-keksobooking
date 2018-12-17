@@ -1,5 +1,4 @@
 'use strict';
-// map.js
 (function () {
   var MAP_WIDTH = 1200;
   var MAP_HEIGTH = 750;

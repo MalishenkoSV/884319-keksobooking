@@ -12,10 +12,11 @@
     });
     return mapPinTemplate;
   };
+  var adverts = window.data.getAdverts();
   var showPinsOnMap = function () {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.adverts.length; i++) {
-      var dataElement = createMapPin(window.data.adverts[i]);
+    for (var i = 0; i < adverts.length; i++) {
+      var dataElement = createMapPin(adverts[i]);
     }
     fragment.appendChild(dataElement);
   };
