@@ -16,6 +16,7 @@
   var activatePage = function () {
     activeForm();
     window.pin.showPinsOnMap(window.data.getAdverts());
+    window.card.showCardOnMap();
     setAddressCoords(MAP_WIDTH / 2, MAP_HEIGTH / 2);
     mainPin.removeEventListener('mouseup', activatePage);
     for (var i = 0; i < fieldsetList.length; i++) {

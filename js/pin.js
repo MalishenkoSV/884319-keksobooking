@@ -8,12 +8,12 @@
     mapPinTemplate.querySelector('img').src = advertData.author.avatar;
     mapPinTemplate.querySelector('img').alt = advertData.offer.title;
     mapPinTemplate.addEventListener('click', function () {
-      window.card.show(advertData);
+      window.card.showCardOnMap(advertData);
     });
     return mapPinTemplate;
   };
-  var adverts = window.data.getAdverts();
   var showPinsOnMap = function () {
+    var adverts = window.data.getAdverts();
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < adverts.length; i++) {
       var dataElement = createMapPin(adverts[i]);

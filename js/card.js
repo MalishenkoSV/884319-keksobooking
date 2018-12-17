@@ -11,7 +11,11 @@
     FLAT: 'Квартира',
     HOUSE: 'Дом',
   };
-  var createAdvert = function (advertOffer) {
+  var advertOffers = window.data.getAdverts();
+  for (var i = 0; i < advertOffers.length; i++) {
+    var advertOffer = advertOffers[0];
+  }
+  var createAdvert = function () {
     var advertTemplate = template.cloneNode(true);
     advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
     advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
@@ -44,8 +48,15 @@
     advertTemplate.classList.remove('.popup__avatar');
     advertTemplate.querySelector('.popup__avatar').src = advertOffer.author.avatar;
     advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
-    advertTemplate.querySelector('.popup__close').addEventListener('click', window.form.close);
+    advertTemplate.querySelector('.popup__close').addEventListener('click', closePopup);
+    advertTemplate.querySelector('.popup__close').addEventListener('keydown', onPopupEnterPress);
     return advertTemplate;
+  };
+  var showCardOnMap = function () {
+    closePopup();
+    var cardAdd = createAdvert(advertOffer);
+    mapListElement.insertBefore(cardAdd, filtersContainer);
+    document.removeEventListener('keydown', onPopupEscPress);
   };
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
@@ -58,22 +69,13 @@
     }
   };
   var closePopup = function () {
-    var card = document.querySelector('.map__card');
+    var card = document.querySelector('.map__card popup');
     if (card) {
       card.remove();
     }
     document.addEventListener('keydown', onPopupEscPress);
-    card.addEventListener('click', closePopup);
-    card.addEventListener('keydown', onPopupEnterPress);
   };
-  var showCardOnMap = function (informAdvert) {
-    closePopup();
-    var cardAdd = createAdvert(informAdvert);
-    mapListElement.insertBefore(cardAdd, filtersContainer);
-    document.removeEventListener('keydown', onPopupEscPress);
-  };
-
   window.card = {
-    show: showCardOnMap
+    showCardOnMap: showCardOnMap
   };
 })();
