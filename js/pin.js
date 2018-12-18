@@ -13,15 +13,13 @@
     });
     return mapPinTemplate;
   };
-  var advertOffers = window.data.getAdverts();
-  var showPinsOnMap = function () {
+  var showPinsOnMap = function (advertOffers) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < advertOffers.length; i++) {
       var dataElement = createMapPin(advertOffers[i]);
       fragment.appendChild(dataElement);
-      mapListPinElement.appendChild(fragment);
     }
-    return showPinsOnMap;
+    mapListPinElement.appendChild(fragment);
   };
   window.pin = {
     showPinsOnMap: showPinsOnMap

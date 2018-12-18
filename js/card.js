@@ -48,12 +48,9 @@
     advertTemplate.querySelector('.popup__close').addEventListener('keydown', onPopupEnterPress);
     return advertTemplate;
   };
-  var showCardOnMap = function () {
+  var showCardOnMap = function (advertOffer) {
     closePopup();
-    var adverts = window.data.getAdverts();
-    for (var i = 0; i < adverts.length; i++) {
-      var cardElement = createAdvert(adverts[i]);
-    }
+    var cardElement = createAdvert(advertOffer);
     mapListCardElement.insertBefore(cardElement, filtersContainer);
     document.addEventListener('keydown', onPopupEscPress);
   };
@@ -61,7 +58,6 @@
     if (evt.keyCode === ESC_KEYCODE) {
       closePopup();
     }
-    return showCardOnMap;
   };
   var onPopupEnterPress = function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
@@ -69,7 +65,7 @@
     }
   };
   var closePopup = function () {
-    var card = document.querySelector('.map__card popup');
+    var card = document.querySelector('.map__card.popup');
     if (card) {
       card.remove();
     }
