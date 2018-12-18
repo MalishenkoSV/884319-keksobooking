@@ -49,10 +49,10 @@
         mainPin.style.top = pinCoords.y + 'px';
         pinStatusCoords.y = pinCoords.y + MAIN_PIN_HEIGHT;
       }
-      window.map.setAddress(pinStatusCoords.x, pinStatusCoords.y);
+      window.form.setAddress(pinStatusCoords.x, pinStatusCoords.y);
     };
     var onMouseUp = function () {
-      window.map.setAddress(pinStatusCoords.x, pinStatusCoords.y);
+      window.form.setAddress(pinStatusCoords.x, pinStatusCoords.y);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };

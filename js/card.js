@@ -4,18 +4,14 @@
   var ENTER_KEYCODE = 13;
   var filtersContainer = document.querySelector('.map__filters-container');
   var template = document.querySelector('#card').content.querySelector('.map__card');
-  var mapListElement = document.querySelector('.map');
+  var mapListCardElement = document.querySelector('.map');
   var PlaceType = {
     BUNGALO: 'Бунгало',
     PALACE: 'Дворец',
     FLAT: 'Квартира',
     HOUSE: 'Дом',
   };
-  var advertOffers = window.data.getAdverts();
-  for (var i = 0; i < advertOffers.length; i++) {
-    var advertOffer = advertOffers[0];
-  }
-  var createAdvert = function () {
+  var createAdvert = function (advertOffer) {
     var advertTemplate = template.cloneNode(true);
     advertTemplate.querySelector('.popup__title').textContent = advertOffer.offer.title;
     advertTemplate.querySelector('.popup__text--address').textContent = advertOffer.offer.address;
@@ -54,14 +50,18 @@
   };
   var showCardOnMap = function () {
     closePopup();
-    var cardAdd = createAdvert(advertOffer);
-    mapListElement.insertBefore(cardAdd, filtersContainer);
-    document.removeEventListener('keydown', onPopupEscPress);
+    var adverts = window.data.getAdverts();
+    for (var i = 0; i < adverts.length; i++) {
+      var cardElement = createAdvert(adverts[i]);
+    }
+    mapListCardElement.insertBefore(cardElement, filtersContainer);
+    document.addEventListener('keydown', onPopupEscPress);
   };
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       closePopup();
     }
+    return showCardOnMap;
   };
   var onPopupEnterPress = function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
@@ -73,7 +73,7 @@
     if (card) {
       card.remove();
     }
-    document.addEventListener('keydown', onPopupEscPress);
+    document.removeEventListener('keydown', onPopupEscPress);
   };
   window.card = {
     showCardOnMap: showCardOnMap

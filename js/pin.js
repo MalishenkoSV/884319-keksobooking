@@ -1,6 +1,7 @@
 'use strict';
 // pin.js
 (function () {
+  var mapListPinElement = document.querySelector('.map__pins');
   var templateMap = document.querySelector('#pin').content.querySelector('.map__pin');
   var createMapPin = function (advertData) {
     var mapPinTemplate = templateMap.cloneNode(true);
@@ -12,13 +13,15 @@
     });
     return mapPinTemplate;
   };
+  var advertOffers = window.data.getAdverts();
   var showPinsOnMap = function () {
-    var adverts = window.data.getAdverts();
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < adverts.length; i++) {
-      var dataElement = createMapPin(adverts[i]);
+    for (var i = 0; i < advertOffers.length; i++) {
+      var dataElement = createMapPin(advertOffers[i]);
+      fragment.appendChild(dataElement);
+      mapListPinElement.appendChild(fragment);
     }
-    fragment.appendChild(dataElement);
+    return showPinsOnMap;
   };
   window.pin = {
     showPinsOnMap: showPinsOnMap
