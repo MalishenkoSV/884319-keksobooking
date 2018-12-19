@@ -10,6 +10,9 @@
     mapPinTemplate.querySelector('img').alt = advertData.offer.title;
     mapPinTemplate.addEventListener('click', function () {
       window.card.showCardOnMap(advertData);
+      if (advertData.offer === 0) {
+        mapPinTemplate = false;
+      }
     });
     return mapPinTemplate;
   };

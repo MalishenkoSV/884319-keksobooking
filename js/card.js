@@ -46,6 +46,9 @@
     advertTemplate.querySelector('.popup__type').textContent = PlaceType[advertOffer.offer.type.toUpperCase()];
     advertTemplate.querySelector('.popup__close').addEventListener('click', closePopup);
     advertTemplate.querySelector('.popup__close').addEventListener('keydown', onPopupEnterPress);
+    if (advertOffer.offer.features === 0) {
+      advertTemplate.setAttribute('style', 'display:none');
+    }
     return advertTemplate;
   };
   var showCardOnMap = function (advertOffer) {
