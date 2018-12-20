@@ -14,7 +14,7 @@
     });
     xhr.open('GET', URL);
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      // onError('Произошла ошибка соединения');
       var template = document.querySelector('#error').content.querySelector('main');
       var errorElement = template.cloneNode(true);
       errorElement.querySelector('.').textContent = 'Ошибка загрузки объявления';

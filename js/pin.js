@@ -5,14 +5,13 @@
   var templateMap = document.querySelector('#pin').content.querySelector('.map__pin');
   var createMapPin = function (advertData) {
     var mapPinTemplate = templateMap.cloneNode(true);
-    mapPinTemplate.style = 'left:' + advertData.location.x + 'px; top:' + advertData.location.y + 'px;';
-    mapPinTemplate.querySelector('img').src = advertData.author.avatar;
-    mapPinTemplate.querySelector('img').alt = advertData.offer.title;
+    if (advertData.offer !== undefined) {
+      mapPinTemplate.style = 'left:' + advertData.location.x + 'px; top:' + advertData.location.y + 'px;';
+      mapPinTemplate.querySelector('img').src = advertData.author.avatar;
+      mapPinTemplate.querySelector('img').alt = advertData.offer.title;
+    }
     mapPinTemplate.addEventListener('click', function () {
       window.card.showCardOnMap(advertData);
-      if (advertData.offer === 0) {
-        mapPinTemplate = false;
-      }
     });
     return mapPinTemplate;
   };
