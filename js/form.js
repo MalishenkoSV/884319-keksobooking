@@ -59,21 +59,18 @@
       roomSelect.setCustomValidity('Количество гостей больше возможного');
     }
   };
-  var onSubmitClick = function () {
+  var onSubmitClick = function (evt) {
     validateGuestAndRoom();
-  };
-  button.addEventListener('click', onSubmitClick);
-  formAddress.addEventListener('submit', function (evt) {
-    window.backend.upLoad(new FormData(formAddress), function () {
+    window.backend.upload(new FormData(formAddress), function () {
       formAddress.classList.add('ad-form--disabled');
       mapListElement.classList.add('map--faded');
       formAddress.reset();
     });
     evt.preventDefault();
-  });
+  };
+  button.addEventListener('click', onSubmitClick);
   window.form = {
     setAddress: setAddressCoords,
     activeForm: activeForm
   };
-
 })();
