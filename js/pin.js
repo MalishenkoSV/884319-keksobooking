@@ -5,7 +5,7 @@
   var templateMap = document.querySelector('#pin').content.querySelector('.map__pin');
   var createMapPin = function (advertData) {
     var mapPinTemplate = templateMap.cloneNode(true);
-    if (advertData.offer !== undefined) {
+    if (advertData.offer) {
       mapPinTemplate.style = 'left:' + advertData.location.x + 'px; top:' + advertData.location.y + 'px;';
       mapPinTemplate.querySelector('img').src = advertData.author.avatar;
       mapPinTemplate.querySelector('img').alt = advertData.offer.title;
