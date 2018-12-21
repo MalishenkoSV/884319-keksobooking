@@ -9,7 +9,9 @@
       window.pin.showPinsOnMap(data);
     };
     var onError = function () {
-      document.body.textContent = 'Произошла ошибка при загрузке данных';
+      var template = document.querySelector('#error').content.querySelector('main');
+      var errorElement = template.cloneNode(true);
+      errorElement.querySelector('.main').textContent = 'Произошла ошибка при загрузке данных';
     };
     window.backend.load(onLoad, onError);
     window.form.setAddress(MAP_WIDTH / 2, MAP_HEIGTH / 2);
