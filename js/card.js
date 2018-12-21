@@ -50,7 +50,7 @@
         advertTemplate.querySelector('.popup__features').appendChild(fragmentForFeatures);
       }
     } else {
-      advertTemplate.querySelector('.popup__features').removeChild();
+      advertTemplate.querySelector('.popup__features').remove();
     }
     advertTemplate.querySelector('.popup__description').textContent = advertOffer.offer.description;
     if (advertOffer.offer.photos) {
@@ -67,7 +67,7 @@
         advertTemplate.querySelector('.popup__photos').appendChild(fragmentForPhotos);
       }
     } else {
-      advertTemplate.querySelector('.popup__photos').removeChild();
+      advertTemplate.querySelector('.popup__photos').remove();
     }
     advertTemplate.classList.remove('.popup__avatar');
     advertTemplate.querySelector('.popup__avatar').src = advertOffer.author.avatar;
