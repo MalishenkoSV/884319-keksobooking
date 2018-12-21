@@ -19,7 +19,7 @@
     xhr.send();
   };
   var upload = function (data, onLoad, onError) {
-    var URL_POST = 'XHR https://js.dump.academy/keksobooking';
+    var URL_POST = 'https://js.dump.academy/keksobooking';
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
