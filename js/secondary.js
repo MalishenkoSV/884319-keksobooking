@@ -17,10 +17,37 @@
     var randomEndIndex = getRandomIntegerFromInterval(1, arr.length - 1);
     return shuffledArray.slice(0, randomEndIndex);
   };
+  // Taken from https://davidwalsh.name/javascript-debounce-function
+  var debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var args = arguments;
+      var later = function () {
+        timeout = null;
+        if (!immediate) {
+          func.apply(null, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(null, args);
+      }
+    };
+  };
+  var defaultFunctionParam = function (fn) {
+    if (typeof fn !== 'function') {
+      return function () {};
+    }
+    return fn;
+  }
   window.secondary = {
     getRandomIntegerFromInterval: getRandomIntegerFromInterval,
     getRandomElementFromArray: getRandomElementFromArray,
     shuffleArray: shuffleArray,
-    getRandomSubarray: getRandomSubarray
+    getRandomSubarray: getRandomSubarray,
+    debounce: debounce,
+    defaultFunctionParam
   };
 })();

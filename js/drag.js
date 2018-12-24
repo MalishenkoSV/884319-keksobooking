@@ -43,7 +43,7 @@
       };
       if (pinCoords.x >= border.left && pinCoords.x <= border.right) {
         mainPin.style.left = pinCoords.x + 'px';
-        pinStatusCoords.x = pinCoords.x + MAIN_PIN_WIDTH / 2;
+        pinStatusCoords.x = pinCoords.x + Math.round(MAIN_PIN_WIDTH / 2);
       }
       if (pinCoords.y >= border.top && pinCoords.y <= border.bottom) {
         mainPin.style.top = pinCoords.y + 'px';

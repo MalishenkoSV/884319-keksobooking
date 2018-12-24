@@ -2,6 +2,7 @@
 // form.js
 (function () {
   var formAddress = document.querySelector('.ad-form');
+  var filtersForm = document.querySelector('.map__filters');
   var fieldsetList = formAddress.querySelectorAll('fieldset');
   var mapListElement = document.querySelector('.map');
   var typeSelect = formAddress.querySelector('#type');
@@ -11,6 +12,8 @@
   var button = formAddress.querySelector('.ad-form__submit');
   var roomSelect = formAddress.querySelector('#room_number');
   var guestSelect = formAddress.querySelector('#capacity');
+  var onFormSave = window.secondary.defaultFunctionParam(onFormSave);
+  var onFormReset = window.secondary.defaultFunctionParam(onFormReset);
   var MinPrice = {
     BUNGALO: 0,
     FLAT: 1000,
@@ -26,13 +29,19 @@
   var setAddressCoords = function (x, y) {
     formAddress.querySelector('#address').value = x + ', ' + y;
   };
+  var disableForm = function () {
+    mapListElement.classList.add('map--faded');
+    formAddress.classList.add('ad-form--disabled');
+    fieldsetList.forEach(function (element) {
+      element.disabled = true;
+    });
+  };
   var activeForm = function () {
     mapListElement.classList.remove('map--faded');
     formAddress.classList.remove('ad-form--disabled');
-    for (var i = 0; i < fieldsetList.length; i++) {
-      var fieldsetTag = fieldsetList[i];
-      fieldsetTag.disabled = false;
-    }
+    fieldsetList.forEach(function (element) {
+      element.disabled = false;
+    });
   };
   typeSelect.addEventListener('change', function () {
     priceSelect.min = MinPrice[typeSelect.value.toUpperCase()];
@@ -59,17 +68,49 @@
       roomSelect.setCustomValidity('Количество гостей больше возможного');
     }
   };
-  var onSubmitClick = function () {
+  var onSubmitClick = function (evt) {
     validateGuestAndRoom();
-    window.backend.upload(new FormData(formAddress), function () {
-      formAddress.classList.add('ad-form--disabled');
-      mapListElement.classList.add('map--faded');
-      formAddress.reset();
+    event.preventDefault();
+    var formData = new FormData(evt.currentTarget);
+    window.backend.upload(onFormSave, window.error.showSubmitFormError, formData);
+  };
+  formAddress.addEventListener('submit', onSubmitClick);
+  button.addEventListener('click', onSubmitClick);
+
+  var resetForm = function () {
+    formAddress.disableForm();
+  };
+  var onLocationChange = window.secondary.debounce(function (x, y) {
+    formAddress.setAddressCoords(x, y);
+  }, 100);
+  var onFormAddressSave = function () {
+    mapListElement.addressSelector.resetToStartPosition();
+    mapListElement.resetPage();
+    formAddress.resetForm();
+    formAddress.disableForm();
+  };
+  onFormReset = function () {
+    mapListElement.addressSelector.reset();
+    filtersForm.disableFilters();
+    var initialPinLocation = window.form.setAddress();
+    formAddress.setAddressCoords(initialPinLocation.x, initialPinLocation.y);
+    formAddress.disableForm();
+  };
+  var resetFormElements = function () {
+    formAddress.querySelectorAll('.is-invalid').forEach(function (element) {
+      element.classList.remove('is-invalid');
     });
   };
-  button.addEventListener('click', onSubmitClick);
+  formAddress.addEventListener('reset', function () {
+    resetFormElements();
+    filtersForm.disableFilters();
+    resetForm();
+  });
   window.form = {
     setAddress: setAddressCoords,
-    activeForm: activeForm
+    activeForm: activeForm,
+    disableForm: disableForm,
+    onFormAddressSave: onFormAddressSave,
+    onLocationChange: onLocationChange
   };
 })();
